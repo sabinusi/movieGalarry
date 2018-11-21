@@ -1,0 +1,13 @@
+﻿@model WebApplication2.viewModel.RandomMovieViewModel
+@{
+    ViewBag.Title = "Random";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.Moive.name</h2>
+@foreach (var cus in Model.Customer) {
+    <li>@cus.Name</li>
+}
+
+
+
