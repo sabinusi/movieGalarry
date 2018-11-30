@@ -1,0 +1,36 @@
+﻿@model WebApplication2.Models.Employe
+<h2>Save</h2>
+@using(@Html.BeginForm("Save","Employe",FormMethod.Post,new { id= "popform" }))
+{
+if(@Model != null && @Model.EmployeID >0){
+@Html.HiddenFor(a=>a.EmployeID)
+}
+<div class="form-group">
+    <label>Name</label>
+    @Html.TextBoxFor(a=>a.Name,new {@class="form-control" })
+    @Html.ValidationMessageFor(a=>a.Name)
+</div>
+<div class="form-group">
+    <label>Office</label>
+    @Html.TextBoxFor(a => a.Office, new { @class = "form-control" })
+    @Html.ValidationMessageFor(a => a.Office)
+</div>
+<div class="form-group">
+    <label>Position</label>
+    @Html.TextBoxFor(a => a.Position, new { @class = "form-control" })
+    @Html.ValidationMessageFor(a => a.Position)
+</div>
+<div class="form-group">
+    <label>Age</label>
+    @Html.TextBoxFor(a => a.Age, new { @class = "form-control" })
+    @Html.ValidationMessageFor(a => a.Age)
+</div>
+<div class="form-group">
+    <label>Salary</label>
+    @Html.TextBoxFor(a => a.Salary, new { @class = "form-control" })
+    @Html.ValidationMessageFor(a => a.Salary)
+</div>
+<div>
+    <input type="submit" value="Save" />
+</div>
+}

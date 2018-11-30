@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Employee cruid operations</h2>
+
+@using (@Html.BeginForm("User", "Employe", FormMethod.Post, new { id = "user" }))
+{
+    @Html.TextBox("username",null,new { @class="form-control"})
+    @Html.TextBox("password",null,new { @class="form-control"})
+    <button trype="submit">submit</button>
+}
+
+<div class="tablecontainer">
+    <a href="/Employe/Save/0" class="popup btn btn-primary" style="margin-bottom:10px;"> Add employe</a>
+    <table id="example" class="display table table-bordered table-striped ">
+        <thead>
+            <tr>
+                <td>Name</td>
+                <td>Salary</td>
+                <td>Oficce</td>
+                <td>Age</td>
+                <td>Position</td>
+                <td>Edit</td>
+                <td>Delete</td>
+            </tr>
+        </thead>
+    </table>
+</div>
+<link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+@section scripts{
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            var oTable = $('#example').DataTable({
+                "ajax": {
+                    "url": "/Employe/Getdata",
+                    "type": "get",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "Name" },
+                    { "data": "Salary" },
+                    { "data": "Office" },
+                    { "data": "Age" },
+                    { "data": "Position" },
+                    {
+                        "data": "EmployeID", "render": function (data) {
+                            return '<a class="popup btn btn-success" href="/Employe/Save/' + data + '">Edit</a>'
+                        }
+                    },
+                    {
+                        "data": "EmployeID", "render": function (data) {
+                            return '<a class="popup btn btn-danger" href="/Employe/Delete/' + data + '">Delete</a>'
+                        }
+                    }
+                ]
+            });
+            $('.tablecontainer').on('click', 'a.popup', function (e) {
+                e.preventDefault();
+                openpoup($(this).attr('href'))
+            })
+            function openpoup(url) {
+                var $bodyContent = $('<div>')
+                $bodyContent.load(url, function () {
+                    $('#popform', $bodyContent).removeData('validator');
+                    $('#popform', $bodyContent).removeData('unobtrusiveValidation');
+                    $.validator.unobtrusive.validator.parse('form')
+                })
+                $diaolog = $('<div class="popupwindow"></div>')
+                    .html($bodyContent)
+                    .dialog({
+                        resizable: false,
+                        autoOpen: false,
+                        model: true,
+                        title: "Popup dialog",
+                        width: 550,
+                        height: 600,
+                        close: function () {
+                            $diaolog.diaolog('destroy').remove();
+                        }
+                    })
+                $('.popupwindow').on('submit', '#popform', function (e) {
+                    var url = $('#popform')[0].action;
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: $('#popform').serialize(),
+                        success: function (data) {
+                            console.log(data.status)
+                            if (data.status) {
+                                oTable.ajax.reload();
+                                $diaolog.dialog('close');
+
+                            }
+                        }
+                    })
+                    e.preventDefault();
+                })
+                $diaolog.dialog('open');
+
+
+            }
+
+
+        });
+    </script>
+}
+
